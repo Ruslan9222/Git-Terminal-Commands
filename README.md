@@ -247,6 +247,8 @@ $ git commit -m 'Мой первый коммит!'
 
 $ git log
 
+$ $ git log --oneline # краткая информация  
+
 ```
 
 # GitHub
