@@ -628,7 +628,7 @@ _Если нужно передать последний коммит, то вм
 ## Статусы untracked/tracked, staged и modified
 
 
-**untracked (англ. «неотслеживаемый»)**
+* **untracked (англ. «неотслеживаемый»)**
  
 _Мы говорили, что новые файлы в Git-репозитории помечаются как untracked, то есть неотслеживаемые._
 
@@ -637,14 +637,14 @@ _Git «видит», что такой файл существует, но не 
 _У untracked-файла нет предыдущих версий, зафиксированных в коммитах или через команду git add._
 
 
-**staged (англ. «подготовленный»)**
+* **staged (англ. «подготовленный»)**
 
 _После выполнения команды git add файл попадает в staging area (от англ. stage — «сцена», «этап [процесса]» и area — «область»), то есть в список файлов, которые войдут в коммит._
 
 _В этот момент файл находится в состоянии staged._
 
 
-**tracked (англ. «отслеживаемый»)**
+* **tracked (англ. «отслеживаемый»)**
 
 _Состояние tracked — это противоположность untracked._
 
@@ -653,7 +653,7 @@ _Оно довольно широкое по смыслу: в него попа�
 _То есть все файлы, в которых Git так или иначе отслеживает изменения._
 
 
-**modified (англ. «изменённый»)**
+* **modified (англ. «изменённый»)**
 
 _Состояние modified означает, что Git сравнил содержимое файла с последней сохранённой версией и нашёл отличия._
 
@@ -692,4 +692,136 @@ _Чтобы добавить в staging последнюю версию, нуж�
 6. Сделали коммит. Состояния: tracked.
 
 7. Повторили пункты 4−7 много-много раз.
+
+
+# Как читать git status
+
+
+## Какие состояния показывает git status
+
+В итоге git status показывает только следующие состояния файлов:
+
+* **staged** _(Changes to be committed в выводе git status);_
+
+* **modified** _(Changes not staged for commit);_
+
+* **untracked** _(Untracked files)._
+
+## Подготавливаем репозиторий
+
+
+```
+$ cd ~/dev
+
+$ mkdir git-status-lesson
+
+$ cd git-status-lesson
+
+$ git init # тут Git выведет что-нибудь, но мы это пропустим
+
+$ touch README.md
+
+$ git add README.md
+
+$ git commit -m 'Добавить README' # по традиции первым создадим и закоммитим файл README.md
+
+```
+
+## Типичные варианты вывода git status
+
+### Нет ни staged-, ни modified-, ни untracked-файлов.
+
+```
+$ git status
+
+On branch master
+nothing to commit, working tree clean 
+
+```
+
+### Найдены неотслеживаемые файлы.
+
+```
+$ git status
+
+$ touch fileA.txt
+
+$ git status
+
+On branch master
+Untracked files: # найдены неотслеживаемые файлы
+  (use "git add <file>..." to include in what will be committed)
+        fileA.txt
+
+nothing added to commit but untracked files present (use "git add" to track)
+
+```
+
+```
+$ git add fileA.txt 
+
+$ git status
+
+On branch master
+Changes to be committed: # новая секция
+  (use "git restore --staged <file>..." to unstage)
+        new file:   fileA.txt
+
+```
+
+```
+$ git commit -m 'Добавить файл fileA.txt' # тут будет вывод комманды commit, он нас не интересует
+
+$ git status
+
+On branch master
+nothing to commit, working tree clean
+
+```
+
+### Найдены изменения, которые не войдут в коммит
+
+```
+# внесли в fileA.txt правки # запросили статус
+
+$ git status 
+
+On branch master
+Changes not staged for commit: # ещё одна секция
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   fileA.txt
+
+```
+
+```
+$ git add fileA.txt
+
+$ git status
+
+On branch master
+Changes to be committed: # все изменения готовы к коммиту
+  (use "git restore --staged <file>..." to unstage)
+        modified:   fileA.txt
+
+```
+
+### Файл добавлен в staging area, но после этого изменён
+
+```
+# изменили fileA.txt
+
+$ git status
+
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+          modified:   fileA.txt
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+          modified:   fileA.txt
+
+```
 
